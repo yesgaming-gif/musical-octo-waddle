@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+            background-color: #ffeef8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #ff1493;
+        }
+
+        .main-container {
+            display: flex;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1000px;
+            width: 90%;
+        }
+
+        .generator-container {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(255, 20, 147, 0.2);
+            position: relative;
+            flex: 1;
+        }
+
+        .history-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            width: 300px;
+            box-shadow: 0 8px 16px rgba(255, 20, 147, 0.2);
+        }
+
+        h1, h2 {
+            color: #ff1493;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            text-shadow: 2px 2px 4px rgba(255, 20, 147, 0.2);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        .character {
+            position: absolute;
+            opacity: 0.7;
+            width: 120px;
+            height: 120px;
+        }
+
+        .character-left {
+            left: -80px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .character-right {
+            right: -80px;
+            top: 50%;
+            transform: translateY(-50%) scaleX(-1);
+        }
+
+        button {
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            margin: 1rem 0;
+            box-shadow: 0 4px 8px rgba(255, 20, 147, 0.3);
+        }
+
+        button:hover {
+            background-color: #ff1493;
+            transform: scale(1.05);
+        }
+
+        #generatedName {
+            font-size: 1.5rem;
+            color: #ff1493;
+            margin: 2rem 0;
+            min-height: 2rem;
+            font-weight: bold;
+        }
+
+        .options {
+            margin: 1rem 0;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        select {
+            padding: 0.5rem;
+            border-radius: 15px;
+            border: 2px solid #ffb6c1;
+            outline: none;
+            font-size: 1rem;
+            color: #ff1493;
+            background-color: #fff0f5;
+        }
+
+        .history-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .history-item {
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            background-color: #fff0f5;
+            border-radius: 10px;
+            color: #ff1493;
+            font-size: 0.9rem;
+            animation: fadeIn 0.5s ease-in-out;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item .timestamp {
+            font-size: 0.7rem;
+            color: #ff69b4;
+        }
+
+        .sparkles {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: sparkle 1.5s infinite;
+            opacity: 0.7;
+        }
+
+        .sparkle1 { top: 10%; left: 10%; animation-delay: 0s; }
+        .sparkle2 { top: 20%; right: 10%; animation-delay: 0.3s; }
+        .sparkle3 { bottom: 15%; left: 15%; animation-delay: 0.6s; }
+        .sparkle4 { bottom: 25%; right: 15%; animation-delay: 0.9s; }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scrollbar styling */
+        .history-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .history-list::-webkit-scrollbar-track {
+            background: #fff0f5;
+            border-radius: 4px;
+        }
+
+        .history-list::-webkit-scrollbar-thumb {
+            background: #ff69b4;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .history-container {
+                width: auto;
+            }
+
+            .character {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="generator-container">
+            <div class="sparkles sparkle1">✨</div>
+            <div class="sparkles sparkle2">✨</div>
+            <div class="sparkles sparkle3">✨</div>
+            <div class="sparkles sparkle4">✨</div>
+            
+            <img class="character character-left" src="/api/placeholder/120/120" alt="Cartoon character left">
+            <img class="character character-right" src="/api/placeholder/120/120" alt="Cartoon character right">
+            
+            <h1>💖 Barbie Name Generator 💖</h1>
+            
+            <div class="options">
+                <select id="nameType">
+                    <option value="barbie">Barbie Name</option>
+                    <option value="fantasy">Fantasy Name</option>
+                    <option value="superhero">Superhero Name</option>
+                    <option value="wizard">Wizard Name</option>
+                </select>
+            </div>
+
+            <button onclick="generateName()">Generate Name!</button>
+            <div id="generatedName"></div>
+        </div>
+
+        <div class="history-container">
+            <h2>Name History</h2>
+            <div id="historyList" class="history-list"></div>
+        </div>
+    </div>
+
+    <script>
+        const firstNames = {
+            barbie: ['Sparkle', 'Glitter', 'Princess', 'Rainbow', 'Shimmer', 'Twinkle', 'Beauty', 'Dream'],
+            fantasy: ['Crystal', 'Storm', 'Sky', 'Moon', 'Star', 'Frost', 'Rain', 'Shadow'],
+            superhero: ['Amazing', 'Super', 'Mighty', 'Wonder', 'Power', 'Mega', 'Ultra', 'Captain'],
+            wizard: ['Merlin', 'Gandalf', 'Albus', 'Magnus', 'Sage', 'Elder', 'Ancient', 'Mystic']
+        };
+
+        const lastNames = {
+            barbie: ['Heart', 'Star', 'Shine', 'Sparkles', 'Dreams', 'Rose', 'Diamond', 'Grace'],
+            fantasy: ['Heart', 'Wind', 'Light', 'Whisper', 'Song', 'Dream', 'Glow', 'Spirit'],
+            superhero: ['Force', 'Hero', 'Warrior', 'Guardian', 'Defender', 'Champion', 'Knight', 'Legend'],
+            wizard: ['the Wise', 'the Magnificent', 'the Mystical', 'the Ancient', 'the Powerful', 'the Great']
+        };
+
+        const nameHistory = [];
+
+        function getRandomElement(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function addToHistory(name, type) {
+            const timestamp = new Date();
+            nameHistory.unshift({ name, type, timestamp });
+            if (nameHistory.length > 10) nameHistory.pop();
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = nameHistory.map(item => `
+                <div class="history-item">
+                    <span>${item.name} (${item.type})</span>
+                    <span class="timestamp">${formatTime(item.timestamp)}</span>
+                </div>
+            `).join('');
+        }
+
+        function generateName() {
+            const nameType = document.getElementById('nameType').value;
+            const firstName = getRandomElement(firstNames[nameType]);
+            const lastName = getRandomElement(lastNames[nameType]);
+            const generatedName = `${firstName} ${lastName}`;
+            
+            const nameElement = document.getElementById('generatedName');
+            nameElement.style.opacity = 0;
+            
+            setTimeout(() => {
+                nameElement.textContent = generatedName;
+                nameElement.style.opacity = 1;
+                addToHistory(generatedName, nameType);
+            }, 200);
+            
+            // Add animation to button
+            const button = document.querySelector('button');
+            button.style.transform = 'scale(0.95)';
+            setTimeout(() => button.style.transform = 'scale(1)', 100);
+        }
+
+        // Add transition for the generated name
+        document.getElementById('generatedName').style.transition = 'opacity 0.3s ease-in-out';
+    </script>
+</body>
+</html>
